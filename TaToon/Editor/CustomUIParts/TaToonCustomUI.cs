@@ -108,7 +108,8 @@ namespace AyahaShader.TaToon
         public static void Information()
         {
             Title("Info");
-            using (new EditorGUILayout.VerticalScope())
+            EditorGUI.indentLevel++;
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 using (new EditorGUILayout.HorizontalScope())
                 {
@@ -125,6 +126,7 @@ namespace AyahaShader.TaToon
                     }
                 }
             }
+            EditorGUI.indentLevel--;
         }
 
         /// <summary>

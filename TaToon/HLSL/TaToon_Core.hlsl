@@ -126,11 +126,13 @@ struct appdata
 
 struct v2f
 {
-    float4 pos : SV_POSITION;
     float2 uv : TEXCOORD0;
+    float4 pos : SV_POSITION;
+    float3 posWS : TEXCOORD1;
+    float3 normal : NORMAL;
+    float4 vertColor : COLOR;
     float2 subTexUV : SUB0;
     float4 decal : DECAL0;      // x : u, y : v, z : Animation u, w : Animation v
-    float3 posWS : TEXCOORD1;
     float4 lightDirWS : TEXCOORD2;      // w : isLight
     float3 lightCol : TEXCOORD3;
     float3 tspace0 : TEXCOORD4;
@@ -140,13 +142,7 @@ struct v2f
         UNITY_LIGHTING_COORDS(7, 8)
     #endif
     float3 sh : TEXCOORD9;
-
-    float3 normal : NORMAL;
-    float4 vertColor : COLOR;
-    
     UNITY_FOG_COORDS(10)
-
-
     UNITY_VERTEX_OUTPUT_STEREO
 };
 

@@ -112,13 +112,12 @@ namespace AyahaShader.TaToon
             // 基本情報を描画
             TaToonCustomUI.Information();
 
-            TaToonCustomUI.GUIPartition();
-
             // 初期状態のGUIを表示させる
             //base.OnGUI(materialEditor, prop);
 
             // Main
             TaToonCustomUI.Title("Main");
+            EditorGUI.indentLevel++;
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.TexturePropertySingleLine(new GUIContent("Main Texture"), mainTex, color);
@@ -128,17 +127,20 @@ namespace AyahaShader.TaToon
                 }
                 materialEditor.ShaderProperty(useVertCol, new GUIContent("Use Vertex Color"));
             }
+            EditorGUI.indentLevel--;
 
             // Normal
             TaToonCustomUI.Title("Normal");
+            EditorGUI.indentLevel++;
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.TexturePropertySingleLine(new GUIContent("Normal Map"), bumpMap, bumpScale);
             }
-            
+            EditorGUI.indentLevel--;
 
             // Shading
             TaToonCustomUI.Title("Shading");
+            EditorGUI.indentLevel++;
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
                 materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), shadeMask);
@@ -157,6 +159,7 @@ namespace AyahaShader.TaToon
                     materialEditor.ShaderProperty(minBrightness, "Min Brightness");
                 }
             }
+            EditorGUI.indentLevel--;
 
             // SubTexture
             if (material.GetInt("_UseSubTex") == 1) useSubTexToggleFoldout = true;
@@ -165,45 +168,48 @@ namespace AyahaShader.TaToon
             {
                 material.SetInt("_UseSubTex", 1);
                 EditorGUI.indentLevel++;
-                materialEditor.ShaderProperty(subTexMode, new GUIContent("SubTexture Mode"));
-                materialEditor.TexturePropertySingleLine(new GUIContent("Sub Texture"), subTex);
-                materialEditor.TexturePropertySingleLine(new GUIContent("NormalMap"), subTexBumpMap, subTexBumpScale);
-                materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), subTexMask, subTexMaskIntensity);
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    materialEditor.ShaderProperty(subTexMode, new GUIContent("SubTexture Mode"));
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Sub Texture"), subTex);
+                    materialEditor.TexturePropertySingleLine(new GUIContent("NormalMap"), subTexBumpMap, subTexBumpScale);
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), subTexMask, subTexMaskIntensity);
 
-                EditorGUILayout.LabelField("SubTexColor", EditorStyles.boldLabel);
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    materialEditor.ShaderProperty(subTexColor, new GUIContent("Color"));
-                    materialEditor.ShaderProperty(subTexColorMode, "");
-                }
-                materialEditor.ShaderProperty(subTexColorChange, "Color Change");
+                    EditorGUILayout.LabelField("SubTexColor", EditorStyles.boldLabel);
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        materialEditor.ShaderProperty(subTexColor, new GUIContent("Color"));
+                        materialEditor.ShaderProperty(subTexColorMode, "");
+                    }
+                    materialEditor.ShaderProperty(subTexColorChange, "Color Change");
 
-                subTexScrollToggleFoldout = EditorGUILayout.Foldout(subTexScrollToggleFoldout, "UV Scroll", true);
-                if(subTexScrollToggleFoldout)
-                {
-                    materialEditor.ShaderProperty(subTexScrollX, "ScrollX");
-                    materialEditor.ShaderProperty(subTexScrollY, "ScrollY");
-                }
+                    subTexScrollToggleFoldout = EditorGUILayout.Foldout(subTexScrollToggleFoldout, "UV Scroll", true);
+                    if(subTexScrollToggleFoldout)
+                    {
+                        materialEditor.ShaderProperty(subTexScrollX, "ScrollX");
+                        materialEditor.ShaderProperty(subTexScrollY, "ScrollY");
+                    }
 
-                if (material.GetInt("_UseSubTexEmission") == 1) useSubTexEmission = true;
-                useSubTexEmission = EditorGUILayout.ToggleLeft("Use Emission", useSubTexEmission);
-                if(useSubTexEmission)
-                {
-                    material.SetInt("_UseSubTexEmission", 1);
-                    materialEditor.ShaderProperty(subTexEmissionColor, "Emission Color");
-                    materialEditor.ShaderProperty(subTexEmissionMaskIntensity, "Emission Mask Intensity");
-                    TaToonCustomUI.FlickerModeToolbar(material, materialEditor, subTexEmissionFlickerMode, "_SubTexEmissionFlickerMode", subTexEmissionFrequency);
-                }
-                else
-                {
-                    material.SetInt("_UseSubTexEmission", 0);
-                }
+                    if (material.GetInt("_UseSubTexEmission") == 1) useSubTexEmission = true;
+                    useSubTexEmission = EditorGUILayout.ToggleLeft("Use Emission", useSubTexEmission);
+                    if(useSubTexEmission)
+                    {
+                        material.SetInt("_UseSubTexEmission", 1);
+                        materialEditor.ShaderProperty(subTexEmissionColor, "Emission Color");
+                        materialEditor.ShaderProperty(subTexEmissionMaskIntensity, "Emission Mask Intensity");
+                        TaToonCustomUI.FlickerModeToolbar(material, materialEditor, subTexEmissionFlickerMode, "_SubTexEmissionFlickerMode", subTexEmissionFrequency);
+                    }
+                    else
+                    {
+                        material.SetInt("_UseSubTexEmission", 0);
+                    }
 
-                subTexAdvancedSettingToggleFoldout = EditorGUILayout.Foldout(subTexAdvancedSettingToggleFoldout, "AdvancedSetting", true);
-                if(subTexAdvancedSettingToggleFoldout)
-                {
-                    materialEditor.ShaderProperty(subTexCullingMode, "Culling Mode");
-                    materialEditor.ShaderProperty(subTexScrollSpeed, "Scroll Speed");
+                    subTexAdvancedSettingToggleFoldout = EditorGUILayout.Foldout(subTexAdvancedSettingToggleFoldout, "AdvancedSetting", true);
+                    if(subTexAdvancedSettingToggleFoldout)
+                    {
+                        materialEditor.ShaderProperty(subTexCullingMode, "Culling Mode");
+                        materialEditor.ShaderProperty(subTexScrollSpeed, "Scroll Speed");
+                    }
                 }
                 EditorGUI.indentLevel--;
             }
@@ -219,42 +225,44 @@ namespace AyahaShader.TaToon
             {
                 material.SetInt("_UseDecal", 1);
                 EditorGUI.indentLevel++;
-                materialEditor.ShaderProperty(decalMode, "Decal Mode");
-                materialEditor.TexturePropertySingleLine(new GUIContent("Decal Texture"), decalTex);
-                materialEditor.TexturePropertySingleLine(new GUIContent("Normal"), decalBumpMap, decalBumpScale);
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    materialEditor.ShaderProperty(decalMode, "Decal Mode");
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Decal Texture"), decalTex);
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Normal"), decalBumpMap, decalBumpScale);
 
-                if (material.GetInt("_UseDecalAnimation") == 1) useDecalAnimationToggleFoldout = true;
-                useDecalAnimationToggleFoldout = EditorGUILayout.ToggleLeft("Use Decal Animation", useDecalAnimationToggleFoldout);
-                if(useDecalAnimationToggleFoldout)
-                {
-                    material.SetInt("_UseDecalAnimation", 1);
-                    materialEditor.ShaderProperty(frameNum, "FrameNum");
-                    materialEditor.ShaderProperty(decalAnimationSpeed, "Animation Speed");
-                    EditorGUILayout.LabelField("Decal Transform", EditorStyles.boldLabel);
-                    materialEditor.ShaderProperty(decalPosX, "Decal PosX");
-                    materialEditor.ShaderProperty(decalPosY, "Decal PosY");
-                    materialEditor.ShaderProperty(decalSizeX, "Decal SizeX");
-                    materialEditor.ShaderProperty(decalSizeY, "Decal SizeY");
-                    materialEditor.ShaderProperty(decalRot, "Decal Rotation");
-                }
-                else
-                {
-                    material.SetInt("_UseDecalAnimation", 0);
-                }
+                    if (material.GetInt("_UseDecalAnimation") == 1) useDecalAnimationToggleFoldout = true;
+                    useDecalAnimationToggleFoldout = EditorGUILayout.ToggleLeft("Use Decal Animation", useDecalAnimationToggleFoldout);
+                    if(useDecalAnimationToggleFoldout)
+                    {
+                        material.SetInt("_UseDecalAnimation", 1);
+                        materialEditor.ShaderProperty(frameNum, "FrameNum");
+                        materialEditor.ShaderProperty(decalAnimationSpeed, "Animation Speed");
+                        EditorGUILayout.LabelField("Decal Transform", EditorStyles.boldLabel);
+                        materialEditor.ShaderProperty(decalPosX, "Decal PosX");
+                        materialEditor.ShaderProperty(decalPosY, "Decal PosY");
+                        materialEditor.ShaderProperty(decalSizeX, "Decal SizeX");
+                        materialEditor.ShaderProperty(decalSizeY, "Decal SizeY");
+                        materialEditor.ShaderProperty(decalRot, "Decal Rotation");
+                    }
+                    else
+                    {
+                        material.SetInt("_UseDecalAnimation", 0);
+                    }
 
-                if (material.GetInt("_UseDecalEmission") == 1) useDecalEmissionToggleFoldout = true;
-                useDecalEmissionToggleFoldout = EditorGUILayout.ToggleLeft("Use Decal Emission", useDecalEmissionToggleFoldout);
-                if(useDecalEmissionToggleFoldout)
-                {
-                    material.SetInt("_UseDecalEmission", 1);
-                    materialEditor.ShaderProperty(decalEmissionColor, "Emission Color");
-                    TaToonCustomUI.FlickerModeToolbar(material, materialEditor, decalEmissionFlickerMode, "_DecalEmissionFlickerMode", decalEmissionFrequency);
+                    if (material.GetInt("_UseDecalEmission") == 1) useDecalEmissionToggleFoldout = true;
+                    useDecalEmissionToggleFoldout = EditorGUILayout.ToggleLeft("Use Decal Emission", useDecalEmissionToggleFoldout);
+                    if(useDecalEmissionToggleFoldout)
+                    {
+                        material.SetInt("_UseDecalEmission", 1);
+                        materialEditor.ShaderProperty(decalEmissionColor, "Emission Color");
+                        TaToonCustomUI.FlickerModeToolbar(material, materialEditor, decalEmissionFlickerMode, "_DecalEmissionFlickerMode", decalEmissionFrequency);
+                    }
+                    else
+                    {
+                        material.SetInt("_UseDecalEmission", 0);
+                    }
                 }
-                else
-                {
-                    material.SetInt("_UseDecalEmission", 0);
-                }
-
                 EditorGUI.indentLevel--;
             }
             else
@@ -268,9 +276,14 @@ namespace AyahaShader.TaToon
             if(useEmissionToggleFoldout)
             {
                 material.SetInt("_UseEmission", 1);
-                materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), emissionMask);
-                materialEditor.ShaderProperty(emissionColor, "Emisson Color");
-                TaToonCustomUI.FlickerModeToolbar(material, materialEditor, emissionFlickerMode, "_EmissionFlickerMode", emissionFrequency);
+                EditorGUI.indentLevel++;
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), emissionMask);
+                    materialEditor.ShaderProperty(emissionColor, "Emisson Color");
+                    TaToonCustomUI.FlickerModeToolbar(material, materialEditor, emissionFlickerMode, "_EmissionFlickerMode", emissionFrequency);
+                }
+                EditorGUI.indentLevel--;
             }
             else
             {
@@ -283,10 +296,15 @@ namespace AyahaShader.TaToon
             if(useRimToggleFoldout)
             {
                 material.SetInt("_UseRim", 1);
-                materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), rimMask);
-                materialEditor.ShaderProperty(rimColor, "Rimlight Color");
-                materialEditor.ShaderProperty(rimPower, "Rimlight Power");
-                materialEditor.ShaderProperty(rimWidth, "Rimlight Width");
+                EditorGUI.indentLevel++;
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), rimMask);
+                    materialEditor.ShaderProperty(rimColor, "Rimlight Color");
+                    materialEditor.ShaderProperty(rimPower, "Rimlight Power");
+                    materialEditor.ShaderProperty(rimWidth, "Rimlight Width");
+                }
+                EditorGUI.indentLevel--;
             }
             else
             {
@@ -299,11 +317,16 @@ namespace AyahaShader.TaToon
             if(useReflectToggleFoldout)
             {
                 material.SetInt("_UseReflect", 1);
-                materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), reflectMask);
-                materialEditor.ShaderProperty(smoothness, "Smoothness");
-                materialEditor.ShaderProperty(specularPower, "SpecularPower");
-                EditorGUILayout.LabelField("MatCap", EditorStyles.boldLabel);
-                materialEditor.TexturePropertySingleLine(new GUIContent("MatCap Texture"), matCapTex);
+                EditorGUI.indentLevel++;
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), reflectMask);
+                    materialEditor.ShaderProperty(smoothness, "Smoothness");
+                    materialEditor.ShaderProperty(specularPower, "SpecularPower");
+                    EditorGUILayout.LabelField("MatCap", EditorStyles.boldLabel);
+                    materialEditor.TexturePropertySingleLine(new GUIContent("MatCap Texture"), matCapTex);
+                }
+                EditorGUI.indentLevel--;
             }
             else
             {
@@ -316,28 +339,39 @@ namespace AyahaShader.TaToon
             if(useOutlineToggleFoldout)
             {
                 material.SetInt("_UseOutline", 1);
-                materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), outlineMask);
-                materialEditor.ShaderProperty(outlineColor, "Outline Color");
-                materialEditor.ShaderProperty(outlineWidth, "Outline Width");
-                outlineAdvancedSettingFoldout = EditorGUILayout.Foldout(outlineAdvancedSettingFoldout, "AdvancedSetting", true);
-                if(outlineAdvancedSettingFoldout)
+                EditorGUI.indentLevel++;
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
                 {
-                    materialEditor.ShaderProperty(useLightColor, "Use Light Color");
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), outlineMask);
+                    materialEditor.ShaderProperty(outlineColor, "Outline Color");
+                    materialEditor.ShaderProperty(outlineWidth, "Outline Width");
+                    outlineAdvancedSettingFoldout = EditorGUILayout.Foldout(outlineAdvancedSettingFoldout, "AdvancedSetting", true);
+                    if(outlineAdvancedSettingFoldout)
+                    {
+                        materialEditor.ShaderProperty(useLightColor, "Use Light Color");
+                    }
                 }
+                EditorGUI.indentLevel--;
             }
             else
             {
                 material.SetInt("_UseOutline", 0);
             }
 
+            // OtherSetting
             otherSettingFoldout = TaToonCustomUI.Foldout("OtherSetting", otherSettingFoldout);
             if(otherSettingFoldout)
             {
-                materialEditor.ShaderProperty(cullingMode, "CullingMode");
-                materialEditor.ShaderProperty(enableZWrite, "EnableZWrite");
-                materialEditor.ShaderProperty(pointLightLimit, "PointLight Limit");
-                materialEditor.TexturePropertySingleLine(new GUIContent("Ramp Texture"), rampTex);
-                EditorGUILayout.HelpBox("未実装", MessageType.Warning);
+                EditorGUI.indentLevel++;
+                using (new EditorGUILayout.VerticalScope(GUI.skin.box))
+                {
+                    materialEditor.ShaderProperty(cullingMode, "CullingMode");
+                    materialEditor.ShaderProperty(enableZWrite, "EnableZWrite");
+                    materialEditor.ShaderProperty(pointLightLimit, "PointLight Limit");
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Ramp Texture"), rampTex);
+                    EditorGUILayout.HelpBox("未実装", MessageType.Warning);
+                }
+                EditorGUI.indentLevel--;
             }
         }
 
