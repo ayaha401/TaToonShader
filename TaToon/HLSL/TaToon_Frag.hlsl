@@ -35,12 +35,14 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     if(_UseSubTex)
     {
         // SubTexture Color
-        subTexCol = _SubTex.Sample(sampler_SubTex, i.subTexUV);
         float subTexMask = saturate(_SubTexMask.Sample(sampler_SubTex, i.subTexUV).r - (_SubTexMaskIntensity * 2. - 1.));
         float subTexColorChangeMask = saturate(_SubTexMask.Sample(sampler_SubTex, i.subTexUV).g - (-1. * (_SubTexColorChange * 2. - 1.)));
-        
-        if(_SubTexColorMode == 0) subTexCol.rgb *= lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
-        if(_SubTexColorMode == 1) subTexCol.rgb = lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
+
+        subTexCol = _SubTex.Sample(sampler_SubTex, i.subTexUV);
+        if(_SubTexColorMode == 2 || _SubTexColorMode == 3) _SubTexColor.rgb = GetRampColor(_RampTex, subTexColorChangeMask, _SubTexRampNum);
+
+        if(_SubTexColorMode == 0 || _SubTexColorMode == 2) subTexCol.rgb *= lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
+        if(_SubTexColorMode == 1 || _SubTexColorMode == 3) subTexCol.rgb = lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
         
         // SubTexture Emission
         if(_UseSubTexEmission)

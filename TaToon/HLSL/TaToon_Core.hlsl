@@ -29,6 +29,7 @@ uniform SamplerState sampler_SubTex;
 uniform Texture2D _SubTexBumpMap;
 uniform float _SubTexBumpScale;
 uniform int _SubTexMode;
+uniform float _SubTexRampNum;
 uniform int _SubTexCullingMode;
 uniform float3 _SubTexColor;
 uniform int _SubTexColorMode;

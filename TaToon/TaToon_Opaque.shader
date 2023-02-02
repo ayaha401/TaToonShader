@@ -15,7 +15,8 @@
         [Enum(Normal, 0, Add, 1, Multiply, 2)] _SubTexMode("SubTexture Mode", int) = 0
         [Enum(Off, 0, Front, 1, Back, 2)] _SubTexCullingMode("SubTexture CullingMode", int) = 2
         _SubTexColor("SubTexture Color", Color) = (1, 1, 1, 1)
-        [Enum(Multiply, 0, Fill, 1)] _SubTexColorMode("SubTexture Color Mode", int) = 0
+        [Enum(Multiply, 0, Fill, 1, RampMultiply, 2, RampFill, 3)] _SubTexColorMode("SubTexture Color Mode", int) = 0
+        _SubTexRampNum("SubTexture Ramp Num", float) = 0
         _SubTexColorChange("SubTexture Color Change", Range(0, 1)) = 0
         _SubTexMask("SubTexture Mask",2D) = "white" {}
         _SubTexMaskIntensity("SubTexture Mask Intensity", Range(0, 1)) = 1
