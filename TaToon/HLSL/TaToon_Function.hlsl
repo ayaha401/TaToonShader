@@ -65,12 +65,6 @@ inline float3 CalcMatCap(sampler2D tex, float2 uv)
     return matCap;
 }
 
-// 指定行列のRampTextureの色を計算する
-inline float4 GetRampColor(sampler2D tex, float column, float value)
-{
-    return tex2D(tex, float2(column, value));
-}
-
 //==================//
 // 0    : Line      //
 // 1    : Sin       //

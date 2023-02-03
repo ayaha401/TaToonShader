@@ -1,6 +1,13 @@
 #ifndef TA_FRAG
 #define TA_FRAG
 
+// 指定行列のRampTextureの色を計算する
+float4 GetRampColor(float column, float value)
+{
+    float heightPos = value * _RampTex_TexelSize.y;
+    return _RampTex.Sample(ramp_Point_Clamp_Sampler, float2(column, heightPos));
+}
+
 float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
 {
     // IsFront
@@ -39,9 +46,9 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
         float subTexColorChangeMask = saturate(_SubTexMask.Sample(sampler_SubTex, i.subTexUV).g - (-1. * (_SubTexColorChange * 2. - 1.)));
 
         subTexCol = _SubTex.Sample(sampler_SubTex, i.subTexUV);
-        if(_SubTexColorMode == 2 || _SubTexColorMode == 3) _SubTexColor.rgb = GetRampColor(_RampTex, subTexColorChangeMask, _SubTexRampNum).rgb;
+        if(_SubTexColorMode == 2 || _SubTexColorMode == 3) _SubTexColor.rgb = GetRampColor(subTexColorChangeMask, _SubTexRampNum).rgb;
 
-        if(_SubTexColorMode == 0 || _SubTexColorMode == 2) subTexCol.rgb *= lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
+        if(_SubTexColorMode == 0 || _SubTexColorMode == 2) subTexCol.rgb = lerp(subTexCol.rgb, subTexCol.rgb * _SubTexColor, subTexColorChangeMask);
         if(_SubTexColorMode == 1 || _SubTexColorMode == 3) subTexCol.rgb = lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
         
         // SubTexture Emission
@@ -50,7 +57,7 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
             float subTexEmissionMask = saturate(_SubTexMask.Sample(sampler_SubTex, i.subTexUV).b - (_SubTexEmissionMaskIntensity * 2. - 1.));
             subTexEmissionCol = _SubTexEmissionColor * subTexEmissionMask;
             subTexEmissionCol *= Wave(_SubTexEmissionFlickerMode, _SubTexEmissionFrequency);
-            if((_SubTexMode == 0) | (_SubTexMode == 2))
+            if((_SubTexMode == 0) || (_SubTexMode == 2))
             {
                 subTexCol.rgb += subTexEmissionCol;
             }
@@ -116,7 +123,7 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     diff = max(shadeMask, diff);
 
     float4 matColor = _Color;
-    if(_ColorMode == 1) matColor = GetRampColor(_RampTex, frac(_Time.y), _ColorRampNum);
+    if(_ColorMode == 1) matColor = GetRampColor(frac(_Time.y), _ColorRampNum);
     float3 albedo = _MainTex.Sample(sampler_MainTex, i.uv) * matColor.rgb * i.vertColor.rgb;
 
     // SubTexture

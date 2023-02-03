@@ -5,18 +5,14 @@
 #include "AutoLight.cginc"
 #include "Lighting.cginc"
 #include "../HLSL/TaToon_Macro.hlsl"
-#include "../HLSL/TaToon_Function.hlsl"
-
-// MainTexSampler
-// uniform SamplerState mainTex_linear_clamp_sampler;
-uniform SamplerState sampler_MainTex;
 
 
 // MainColor
+uniform SamplerState sampler_MainTex;
 uniform Texture2D _MainTex; uniform float4 _MainTex_ST;
 uniform float4 _Color;
 uniform int _ColorMode;
-uniform float _ColorRampNum;
+uniform int _ColorRampNum;
 uniform int _UseVertCol;
 #if defined(TRANSPARENT) || defined(CUTOUT)
     uniform Texture2D _AlphaMask; uniform float4 _AlphaMask_ST;
@@ -33,7 +29,7 @@ uniform SamplerState sampler_SubTex;
 uniform Texture2D _SubTexBumpMap;
 uniform float _SubTexBumpScale;
 uniform int _SubTexMode;
-uniform float _SubTexRampNum;
+uniform int _SubTexRampNum;
 uniform int _SubTexCullingMode;
 uniform float3 _SubTexColor;
 uniform int _SubTexColorMode;
@@ -114,7 +110,8 @@ uniform sampler2D _MatCapTex;
     uniform bool _PointLightLimit;
 #endif
 uniform float _SubTexScrollSpeed;
-uniform sampler2D _RampTex;
+uniform SamplerState ramp_Point_Clamp_Sampler;
+uniform Texture2D _RampTex; uniform float4 _RampTex_TexelSize;
 
 struct appdata
 {
@@ -151,6 +148,7 @@ struct v2f
     UNITY_VERTEX_OUTPUT_STEREO
 };
 
+#include "../HLSL/TaToon_Function.hlsl"
 #include "../HLSL/TaToon_Vert.hlsl"
 #include "../HLSL/TaToon_Frag.hlsl"
 

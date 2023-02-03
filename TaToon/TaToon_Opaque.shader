@@ -6,7 +6,7 @@
         _MainTex("Texture", 2D) = "white" {}
         _Color("Color", Color) = (1, 1, 1, 1)
         [Enum(Multiply, 0, RampMultiply, 1)] _ColorMode("Color Mode", int) = 0
-        _ColorRampNum("Color Ramp Num", float) = 0
+        _ColorRampNum("Color Ramp Num", int) = 0
         [Toggle] _UseVertCol("Use Vertex Color", int) = 0
 
         // SubTexture
@@ -18,7 +18,7 @@
         [Enum(Off, 0, Front, 1, Back, 2)] _SubTexCullingMode("SubTexture CullingMode", int) = 2
         _SubTexColor("SubTexture Color", Color) = (1, 1, 1, 1)
         [Enum(Multiply, 0, Fill, 1, RampMultiply, 2, RampFill, 3)] _SubTexColorMode("SubTexture Color Mode", int) = 0
-        _SubTexRampNum("SubTexture Ramp Num", float) = 0
+        _SubTexRampNum("SubTexture Ramp Num", int) = 0
         _SubTexColorChange("SubTexture Color Change", Range(0, 1)) = 0
         _SubTexMask("SubTexture Mask",2D) = "white" {}
         _SubTexMaskIntensity("SubTexture Mask Intensity", Range(0, 1)) = 1
@@ -29,6 +29,7 @@
         _SubTexEmissionMaskIntensity("SubTexture Emission Mask Intensity", Range(0, 1)) = 0
         [Enum(LINE,0, SIN,1, SAW,2, TRIANGLE,3, SQUARE,4)] _SubTexEmissionFlickerMode("SubTexture Emission Flicker Mode", int) = 0
         _SubTexEmissionFrequency("SubTexture Emission Flicker Frequency", float) = 1
+        _SubTexScrollSpeed("SubTexture Scroll Speed", float) = 1
 
         // Decal
         [Toggle] _UseDecal("Use Decal", int) = 0
@@ -93,8 +94,7 @@
         [Toggle] _EnableZWrite("ZWrite", int) = 1
         _MinBrightness("Min Brightness", Range(0, 1)) = 0.5
         [Toggle] _PointLightLimit("PointLight Limit", int) = 1
-        _SubTexScrollSpeed("SubTexture Scroll Speed", float) = 1
-        _RampTex("Ramp Texture", 2D) = "wite" {}
+        _RampTex("Ramp Texture", 2D) = "white" {}
     }
     SubShader
     {
