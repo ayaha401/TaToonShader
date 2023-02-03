@@ -9,19 +9,23 @@ namespace AyahaShader.TaToon
     {
         // MainColor
         private MaterialProperty mainTex;
+        private bool mainTexFoldout = false;
         private MaterialProperty alphaMask;
         private MaterialProperty color;
+        private MaterialProperty colorMode;
+        private int colorRampNumber;
+        private float colorRampHeight;
         private MaterialProperty useVertCol;
 
         // SubTexture
         private bool useSubTexToggleFoldout;
         private MaterialProperty subTex;
+        private bool subTexFoldout = false;
         private MaterialProperty subTexColor;
         private MaterialProperty subTexBumpMap;
         private MaterialProperty subTexBumpScale;
         private MaterialProperty subTexMode;
         private MaterialProperty subTexColorMode;
-        private MaterialProperty subTexRampNum;
         private int subTexRampNumber;
         private float subTexRampHeight;
         private MaterialProperty subTexColorChange;
@@ -60,6 +64,7 @@ namespace AyahaShader.TaToon
 
         // Normal
         private MaterialProperty bumpMap;
+        private bool bumpMapFoldout = false;
         private MaterialProperty bumpScale;
 
         // Shading
@@ -123,8 +128,26 @@ namespace AyahaShader.TaToon
             EditorGUI.indentLevel++;
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
-                materialEditor.TexturePropertySingleLine(new GUIContent("Main Texture"), mainTex, color);
-                if(alphaMask != null)
+                TaToonCustomUI.TextureFoldout("Main Texture", materialEditor, mainTex, ref mainTexFoldout);
+                
+                // Color
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (material.GetInt("_ColorMode") == 0)
+                    {
+                        materialEditor.ShaderProperty(color, new GUIContent("Color"));
+                    }
+                    else
+                    {
+                        colorRampNumber = EditorGUILayout.IntField("RampNumber", colorRampNumber);
+                        colorRampHeight = (float)colorRampNumber / (float)material.GetTexture("_RampTex").height;
+                        material.SetFloat("_ColorRampNum", colorRampHeight);
+                    }
+                    materialEditor.ShaderProperty(colorMode, "");
+                }
+
+                // AlphaMask
+                if (alphaMask != null)
                 {
                     materialEditor.TexturePropertySingleLine(new GUIContent("AlphaMask"), alphaMask);
                 }
@@ -137,7 +160,8 @@ namespace AyahaShader.TaToon
             EditorGUI.indentLevel++;
             using (new EditorGUILayout.VerticalScope(GUI.skin.box))
             {
-                materialEditor.TexturePropertySingleLine(new GUIContent("Normal Map"), bumpMap, bumpScale);
+                TaToonCustomUI.TextureFoldout("Normal Map", materialEditor, bumpMap, ref bumpMapFoldout);
+                materialEditor.ShaderProperty(bumpScale, new GUIContent("Normal Scale"));
             }
             EditorGUI.indentLevel--;
 
@@ -174,7 +198,7 @@ namespace AyahaShader.TaToon
                 using (new EditorGUILayout.VerticalScope(GUI.skin.box))
                 {
                     materialEditor.ShaderProperty(subTexMode, new GUIContent("SubTexture Mode"));
-                    materialEditor.TexturePropertySingleLine(new GUIContent("Sub Texture"), subTex);
+                    TaToonCustomUI.TextureFoldout("Sub Texture", materialEditor, subTex, ref subTexFoldout);
                     materialEditor.TexturePropertySingleLine(new GUIContent("NormalMap"), subTexBumpMap, subTexBumpScale);
                     materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), subTexMask, subTexMaskIntensity);
 
@@ -392,6 +416,7 @@ namespace AyahaShader.TaToon
             mainTex = FindProperty("_MainTex", prop, false);
             alphaMask = FindProperty("_AlphaMask", prop, false);
             color = FindProperty("_Color", prop, false);
+            colorMode = FindProperty("_ColorMode", prop, false);
             useVertCol = FindProperty("_UseVertCol", prop, false);
 
             // SubTex
@@ -401,7 +426,6 @@ namespace AyahaShader.TaToon
             subTexBumpScale = FindProperty("_SubTexBumpScale", prop, false);
             subTexMode = FindProperty("_SubTexMode", prop, false);
             subTexColorMode = FindProperty("_SubTexColorMode", prop, false);
-            subTexRampNum = FindProperty("_SubTexRampNum", prop, false);
             subTexColorChange = FindProperty("_SubTexColorChange", prop, false);
             subTexMask = FindProperty("_SubTexMask", prop, false);
             subTexMaskIntensity = FindProperty("_SubTexMaskIntensity", prop, false);

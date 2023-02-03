@@ -39,7 +39,7 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
         float subTexColorChangeMask = saturate(_SubTexMask.Sample(sampler_SubTex, i.subTexUV).g - (-1. * (_SubTexColorChange * 2. - 1.)));
 
         subTexCol = _SubTex.Sample(sampler_SubTex, i.subTexUV);
-        if(_SubTexColorMode == 2 || _SubTexColorMode == 3) _SubTexColor.rgb = GetRampColor(_RampTex, subTexColorChangeMask, _SubTexRampNum);
+        if(_SubTexColorMode == 2 || _SubTexColorMode == 3) _SubTexColor.rgb = GetRampColor(_RampTex, subTexColorChangeMask, _SubTexRampNum).rgb;
 
         if(_SubTexColorMode == 0 || _SubTexColorMode == 2) subTexCol.rgb *= lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
         if(_SubTexColorMode == 1 || _SubTexColorMode == 3) subTexCol.rgb = lerp(subTexCol.rgb, _SubTexColor, subTexColorChangeMask);
@@ -112,10 +112,12 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     float diff = halfLambert;
     diff += _ShadeBorder * .5;
     diff = clamp(((diff - .5) / TA_COMPARE_EPS(_ShadeBorderWidth)) + .5 + (_Brightness * .5), _Brightness, 1.);
-    float shadeMask = _ShadeMask.Sample(mainTex_linear_clamp_sampler, i.uv);
+    float shadeMask = _ShadeMask.Sample(sampler_MainTex, i.uv);
     diff = max(shadeMask, diff);
 
-    float3 albedo = _MainTex.Sample(mainTex_linear_clamp_sampler, i.uv) * _Color.rgb * i.vertColor.rgb;
+    float4 matColor = _Color;
+    if(_ColorMode == 1) matColor = GetRampColor(_RampTex, frac(_Time.y), _ColorRampNum);
+    float3 albedo = _MainTex.Sample(sampler_MainTex, i.uv) * matColor.rgb * i.vertColor.rgb;
 
     // SubTexture
     if(_UseSubTex)
@@ -139,8 +141,8 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     float4 col = float4(0., 0., 0., 1.);
     col.rgb = diffCol;
     #if defined(TRANSPARENT) || defined(CUTOUT)
-        col.a = _MainTex.Sample(mainTex_linear_clamp_sampler, i.uv).a * _Color.a;
-        col.a *= _AlphaMask.Sample(mainTex_linear_clamp_sampler, i.uv).r;
+        col.a = _MainTex.Sample(sampler_MainTex, i.uv).a * matColor.a;
+        col.a *= _AlphaMask.Sample(sampler_MainTex, i.uv).r;
     #endif
 
     // Cutout
@@ -174,7 +176,7 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     float3 emission = (float3)0.;
     if(_UseEmission)
     {
-        float emissionMask = _EmissionMask.Sample(mainTex_linear_clamp_sampler, i.uv).r;
+        float emissionMask = _EmissionMask.Sample(sampler_MainTex, i.uv).r;
         emission = _EmissionColor * emissionMask;
         emission *= Wave(_EmissionFlickerMode, _EmissionFrequency);
 
@@ -188,7 +190,7 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     float rim = 0.;
     if(_UseRim)
     {
-        float rimMask = _RimMask.Sample(mainTex_linear_clamp_sampler, i.uv).r;
+        float rimMask = _RimMask.Sample(sampler_MainTex, i.uv).r;
         rim = CalcRimlight(cameraViewWS, normalWS, _RimWidth, _RimPower);
         rim *= rimMask;
         rimlight = (float3)rim * _RimColor;
@@ -204,7 +206,7 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     float3 materialCapture = (float3)0.;
     if(_UseReflect)
     {
-        float reflectMask = _ReflectMask.Sample(mainTex_linear_clamp_sampler, i.uv).r;
+        float reflectMask = _ReflectMask.Sample(sampler_MainTex, i.uv).r;
         float smoothness = max(_Smoothness, .05) * 100.;
         float specularInt = _SpecularPower;
 

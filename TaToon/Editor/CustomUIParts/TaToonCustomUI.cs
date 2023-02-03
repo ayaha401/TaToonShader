@@ -159,5 +159,40 @@ namespace AyahaShader.TaToon
                 }
             }
         }
+
+        /// <summary>
+        /// Tiling と OffsetをFoldoutして見せる
+        /// </summary>
+        /// <param name="label">見出し名</param>
+        /// <param name="materialEditor">MaterialEditor</param>
+        /// <param name="prop">テクスチャProperty</param>
+        /// <param name="display">開閉のbool</param>
+        public static void TextureFoldout(string label, MaterialEditor materialEditor, MaterialProperty prop, ref bool display)
+        {
+            var rect = GUILayoutUtility.GetRect(16.0f, 22.0f, GUIStyle.none);
+            var e = Event.current;
+
+            materialEditor.TexturePropertyMiniThumbnail(new Rect(rect.x, rect.y + 2.0f, rect.width - 20.0f, rect.height), prop, label, "");
+
+            var toggle = new Rect(rect.x + 2.0f + EditorGUI.indentLevel, rect.y + 3.0f, 16.0f, 16.0f);
+            if (e.type == EventType.Repaint)
+            {
+                EditorStyles.foldout.Draw(toggle, false, false, display, false);
+            }
+
+            if (e.type == EventType.MouseDown && rect.Contains(e.mousePosition))
+            {
+                display = !display;
+                e.Use();
+            }
+
+            if (display)
+            {
+                using (new EditorGUI.IndentLevelScope())
+                {
+                    materialEditor.TextureScaleOffsetProperty(prop);
+                }
+            }
+        }
     }
 }

@@ -5,6 +5,8 @@
         // MainColor
         _MainTex("Texture", 2D) = "white" {}
         _Color("Color", Color) = (1, 1, 1, 1)
+        [Enum(Multiply, 0, RampMultiply, 1)] _ColorMode("Color Mode", int) = 0
+        _ColorRampNum("Color Ramp Num", float) = 0
         [Toggle] _UseVertCol("Use Vertex Color", int) = 0
 
         // SubTexture

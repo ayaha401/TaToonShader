@@ -8,11 +8,15 @@
 #include "../HLSL/TaToon_Function.hlsl"
 
 // MainTexSampler
-uniform SamplerState mainTex_linear_clamp_sampler;
+// uniform SamplerState mainTex_linear_clamp_sampler;
+uniform SamplerState sampler_MainTex;
+
 
 // MainColor
 uniform Texture2D _MainTex; uniform float4 _MainTex_ST;
 uniform float4 _Color;
+uniform int _ColorMode;
+uniform float _ColorRampNum;
 uniform int _UseVertCol;
 #if defined(TRANSPARENT) || defined(CUTOUT)
     uniform Texture2D _AlphaMask; uniform float4 _AlphaMask_ST;
