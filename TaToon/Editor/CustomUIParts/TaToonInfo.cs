@@ -4,7 +4,7 @@ namespace AyahaShader.TaToon
 {
     public class TaToonInfo : MonoBehaviour
     {
-        private static string version = "0.0.7";
+        private static string version = "0.0.8";
         private static string repositoryLink = "https://github.com/ayaha401/TaToonShader";
 
         /// <summary>

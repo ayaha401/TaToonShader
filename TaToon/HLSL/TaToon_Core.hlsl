@@ -77,7 +77,7 @@ uniform float _Brightness;
 
 // Emission
 uniform int _UseEmission;
-uniform Texture2D _EmissionMask;
+uniform Texture2D _EmissionTex;
 uniform float3 _EmissionColor;
 uniform int _EmissionFlickerMode;
 uniform float _EmissionFrequency;

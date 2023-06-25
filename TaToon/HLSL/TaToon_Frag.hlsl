@@ -183,8 +183,8 @@ float4 frag(v2f i, bool isFrontFace : SV_IsFrontFace) : SV_Target
     float3 emission = (float3)0.;
     if(_UseEmission)
     {
-        float emissionMask = _EmissionMask.Sample(sampler_MainTex, i.uv).r;
-        emission = _EmissionColor * emissionMask;
+        float3 emissionBaseColor = _EmissionTex.Sample(sampler_MainTex, i.uv);
+        emission = _EmissionColor * emissionBaseColor;
         emission *= Wave(_EmissionFlickerMode, _EmissionFrequency);
 
         #ifdef FA

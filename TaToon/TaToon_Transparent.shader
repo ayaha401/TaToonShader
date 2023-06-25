@@ -64,7 +64,7 @@
 
         // Emission
         [Toggle] _UseEmission("Use Emission", int) = 0
-        _EmissionMask("Emission Mask", 2D) = "white" {}
+        _EmissionTex("EmissionTexture", 2D) = "white" {}
         [HDR] _EmissionColor("Emission Color", Color) = (0, 0, 0, 0)
         [Enum(LINE,0, SIN,1, SAW,2, TRIANGLE,3, SQUARE,4)] _EmissionFlickerMode("Emission Flicker Mode", int) = 0
         _EmissionFrequency("Emission Flicker Frequency", float) = 1

@@ -309,7 +309,7 @@ namespace AyahaShader.TaToon
                 EditorGUI.indentLevel++;
                 using (new EditorGUILayout.VerticalScope(GUI.skin.box))
                 {
-                    materialEditor.TexturePropertySingleLine(new GUIContent("Mask"), emissionMask);
+                    materialEditor.TexturePropertySingleLine(new GUIContent("Emission Texture"), emissionMask);
                     materialEditor.ShaderProperty(emissionColor, "Emisson Color");
                     TaToonCustomUI.FlickerModeToolbar(material, materialEditor, emissionFlickerMode, "_EmissionFlickerMode", emissionFrequency);
                 }
@@ -461,7 +461,7 @@ namespace AyahaShader.TaToon
             minBrightness = FindProperty("_MinBrightness", prop, false);
 
             // Emission
-            emissionMask = FindProperty("_EmissionMask", prop, false);
+            emissionMask = FindProperty("_EmissionTex", prop, false);
             emissionColor = FindProperty("_EmissionColor", prop, false);
             emissionFrequency = FindProperty("_EmissionFrequency", prop, false);
 
